@@ -10,20 +10,20 @@ import (
 
 	ujconfig "github.com/crossplane/upjet/pkg/config"
 
-	confluentapikey "github.com/crossplane-contrib/provider-confluent/config/confluent_api_key"
-	confluentenvironment "github.com/crossplane-contrib/provider-confluent/config/confluent_environment"
-	confluentkafkaacl "github.com/crossplane-contrib/provider-confluent/config/confluent_kafka_acl"
-	confluentkafkacluster "github.com/crossplane-contrib/provider-confluent/config/confluent_kafka_cluster"
-	confluentkafkaclusterconfig "github.com/crossplane-contrib/provider-confluent/config/confluent_kafka_cluster_config"
-	confluentkafkatopic "github.com/crossplane-contrib/provider-confluent/config/confluent_kafka_topic"
-	confluentrolebinding "github.com/crossplane-contrib/provider-confluent/config/confluent_role_binding"
+	confluentapikey "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_api_key"
+	confluentenvironment "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_environment"
+	confluentkafkaacl "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_acl"
+	confluentkafkacluster "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_cluster"
+	confluentkafkaclusterconfig "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_cluster_config"
+	confluentkafkatopic "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_topic"
+	confluentrolebinding "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_role_binding"
 
-	confluentserviceaccount "github.com/crossplane-contrib/provider-confluent/config/confluent_service_account"
+	confluentserviceaccount "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_service_account"
 )
 
 const (
 	resourcePrefix = "confluent"
-	modulePath     = "github.com/crossplane-contrib/provider-confluent"
+	modulePath     = "github.com/rouzbehsedighi/provider-confluent-sap"
 )
 
 //go:embed schema.json
