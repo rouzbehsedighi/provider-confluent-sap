@@ -22,5 +22,8 @@ func Configure(p *config.Provider) {
 		r.LateInitializer = config.LateInitializer{
 			IgnoredFields: []string{"network"},
 		}
+		r.TerraformResource.Schema["byok_key"].Optional = true
+		r.TerraformResource.Schema["byok_key"].Computed = true                               // sometimes needed
+		r.TerraformResource.Schema["byok_key"].AtLeastOneOf = []string{"config.kind!=BASIC"} // pseudo
 	})
 }
