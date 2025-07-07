@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: environments.confluent.crossplane.io
+  name: rolebindings.confluent.test.sap
 spec:
-  group: confluent.crossplane.io
+  group: confluent.test.sap
   names:
     categories:
     - crossplane
     - managed
     - confluent
-    kind: Environment
-    listKind: EnvironmentList
-    plural: environments
-    singular: environment
+    kind: RoleBinding
+    listKind: RoleBindingList
+    plural: rolebindings
+    singular: rolebinding
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: Environment is the Schema for the Environments API.
+        description: RoleBinding is the Schema for the RoleBindings API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,7 +49,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: EnvironmentSpec defines the desired state of Environment
+            description: RoleBindingSpec defines the desired state of RoleBinding
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,25 +66,28 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  displayName:
-                    description: A human-readable name for the Environment. Start
-                      and end the name with alphanumeric characters, for example,
-                      "Development". The name can contain hyphens and underscores.
-                      A human-readable name for the Environment.
+                  crnPattern:
+                    description: A Confluent Resource Name (CRN) that specifies the
+                      scope and resource patterns necessary for the role to bind.
+                      A CRN that specifies the scope and resource patterns necessary
+                      for the role to bind.
                     type: string
-                  streamGovernance:
-                    description: 'The stream governance configuration for the Environment.
-                      The block supports the following arguments: Stream Governance
-                      configurations for the environment'
-                    items:
-                      properties:
-                        package:
-                          description: 'The stream governance package for the Environment.
-                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
-                            Package. ''ESSENTIALS'' or ''ADVANCED'''
-                          type: string
-                      type: object
-                    type: array
+                  disableWaitForReady:
+                    description: An optional flag to disable wait-for-readiness on
+                      create. Must be unset when importing. Defaults to false. Defaults
+                      to `false`.
+                    type: boolean
+                  principal:
+                    description: A principal User to bind the role to, for example,
+                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
+                      for binding to a service account "sa-111aaa". The principal
+                      User to bind the role to.
+                    type: string
+                  roleName:
+                    description: A name of the role to bind to the principal. See
+                      Confluent Cloud RBAC Roles for a full list of supported role
+                      names. The name of the role to bind to the principal.
+                    type: string
                 type: object
               initProvider:
                 description: THIS IS A BETA FIELD. It will be honored unless the Management
@@ -98,25 +101,28 @@ spec:
                   for example because of an external controller is managing them,
                   like an autoscaler.
                 properties:
-                  displayName:
-                    description: A human-readable name for the Environment. Start
-                      and end the name with alphanumeric characters, for example,
-                      "Development". The name can contain hyphens and underscores.
-                      A human-readable name for the Environment.
+                  crnPattern:
+                    description: A Confluent Resource Name (CRN) that specifies the
+                      scope and resource patterns necessary for the role to bind.
+                      A CRN that specifies the scope and resource patterns necessary
+                      for the role to bind.
                     type: string
-                  streamGovernance:
-                    description: 'The stream governance configuration for the Environment.
-                      The block supports the following arguments: Stream Governance
-                      configurations for the environment'
-                    items:
-                      properties:
-                        package:
-                          description: 'The stream governance package for the Environment.
-                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
-                            Package. ''ESSENTIALS'' or ''ADVANCED'''
-                          type: string
-                      type: object
-                    type: array
+                  disableWaitForReady:
+                    description: An optional flag to disable wait-for-readiness on
+                      create. Must be unset when importing. Defaults to false. Defaults
+                      to `false`.
+                    type: boolean
+                  principal:
+                    description: A principal User to bind the role to, for example,
+                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
+                      for binding to a service account "sa-111aaa". The principal
+                      User to bind the role to.
+                    type: string
+                  roleName:
+                    description: A name of the role to bind to the principal. See
+                      Confluent Cloud RBAC Roles for a full list of supported role
+                      names. The name of the role to bind to the principal.
+                    type: string
                 type: object
               managementPolicies:
                 default:
@@ -279,42 +285,48 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.displayName is a required parameter
+            - message: spec.forProvider.crnPattern is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.displayName)
-                || (has(self.initProvider) && has(self.initProvider.displayName))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.crnPattern)
+                || (has(self.initProvider) && has(self.initProvider.crnPattern))'
+            - message: spec.forProvider.principal is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.principal)
+                || (has(self.initProvider) && has(self.initProvider.principal))'
+            - message: spec.forProvider.roleName is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.roleName)
+                || (has(self.initProvider) && has(self.initProvider.roleName))'
           status:
-            description: EnvironmentStatus defines the observed state of Environment.
+            description: RoleBindingStatus defines the observed state of RoleBinding.
             properties:
               atProvider:
                 properties:
-                  displayName:
-                    description: A human-readable name for the Environment. Start
-                      and end the name with alphanumeric characters, for example,
-                      "Development". The name can contain hyphens and underscores.
-                      A human-readable name for the Environment.
+                  crnPattern:
+                    description: A Confluent Resource Name (CRN) that specifies the
+                      scope and resource patterns necessary for the role to bind.
+                      A CRN that specifies the scope and resource patterns necessary
+                      for the role to bind.
                     type: string
+                  disableWaitForReady:
+                    description: An optional flag to disable wait-for-readiness on
+                      create. Must be unset when importing. Defaults to false. Defaults
+                      to `false`.
+                    type: boolean
                   id:
-                    description: The ID of the Environment, for example, env-abc123.
+                    description: The ID of the Role Binding (e.g., rb-f3a90de).
                     type: string
-                  resourceName:
-                    description: The Confluent Resource Name of the Environment, for
-                      example, crn://confluent.cloud/organization=1111aaaa-11aa-11aa-11aa-111111aaaaaa/environment=env-abc123.
-                      The Confluent Resource Name of the Environment.
+                  principal:
+                    description: A principal User to bind the role to, for example,
+                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
+                      for binding to a service account "sa-111aaa". The principal
+                      User to bind the role to.
                     type: string
-                  streamGovernance:
-                    description: 'The stream governance configuration for the Environment.
-                      The block supports the following arguments: Stream Governance
-                      configurations for the environment'
-                    items:
-                      properties:
-                        package:
-                          description: 'The stream governance package for the Environment.
-                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
-                            Package. ''ESSENTIALS'' or ''ADVANCED'''
-                          type: string
-                      type: object
-                    type: array
+                  roleName:
+                    description: A name of the role to bind to the principal. See
+                      Confluent Cloud RBAC Roles for a full list of supported role
+                      names. The name of the role to bind to the principal.
+                    type: string
                 type: object
               conditions:
                 description: Conditions of the resource.

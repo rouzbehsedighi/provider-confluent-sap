@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: kafkatopics.confluent.crossplane.io
+  name: clusters.confluent.test.sap
 spec:
-  group: confluent.crossplane.io
+  group: confluent.test.sap
   names:
     categories:
     - crossplane
     - managed
     - confluent
-    kind: KafkaTopic
-    listKind: KafkaTopicList
-    plural: kafkatopics
-    singular: kafkatopic
+    kind: Cluster
+    listKind: ClusterList
+    plural: clusters
+    singular: cluster
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: KafkaTopic is the Schema for the KafkaTopics API.
+        description: Cluster is the Schema for the Clusters API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,7 +49,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: KafkaTopicSpec defines the desired state of KafkaTopic
+            description: ClusterSpec defines the desired state of Cluster
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,67 +66,75 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom topic settings to set: The custom topic
-                      settings to set (e.g., `"cleanup.policy" = "compact"`).'
-                    type: object
-                  credentials:
-                    description: 'supports the following: The Cluster API Credentials.'
+                  availability:
+                    description: 'The availability zone configuration of the Kafka
+                      cluster. Accepted values are: SINGLE_ZONE, MULTI_ZONE, LOW,
+                      and HIGH. The availability zone configuration of the Kafka cluster.'
+                    type: string
+                  basic:
+                    description: The configuration of the Basic Kafka cluster.
                     items:
-                      properties:
-                        keySecretRef:
-                          description: The Kafka API Key. The Cluster API Key for
-                            your Confluent Cloud cluster.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                            namespace:
-                              description: Namespace of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          - namespace
-                          type: object
-                        secretSecretRef:
-                          description: The Kafka API Secret. The Cluster API Secret
-                            for your Confluent Cloud cluster.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                            namespace:
-                              description: Namespace of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          - namespace
-                          type: object
-                      required:
-                      - keySecretRef
-                      - secretSecretRef
                       type: object
                     type: array
-                  kafkaCluster:
+                  byokKey:
                     description: 'supports the following:'
                     items:
                       properties:
                         id:
-                          description: The ID of the Kafka cluster, for example, lkc-abc123.
-                            The Kafka cluster ID (e.g., `lkc-12345`).
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The ID of the Confluent
+                            key that is used to encrypt the data in the Kafka cluster.
+                          type: string
+                      type: object
+                    type: array
+                  cloud:
+                    description: 'The cloud service provider that runs the Kafka cluster.
+                      Accepted values are: AWS, AZURE, and GCP. The cloud service
+                      provider that runs the Kafka cluster.'
+                    type: string
+                  dedicated:
+                    description: 'The configuration of the Dedicated Kafka cluster.
+                      It supports the following:'
+                    items:
+                      properties:
+                        cku:
+                          description: The number of Confluent Kafka Units (CKUs)
+                            for Dedicated cluster types. The minimum number of CKUs
+                            for SINGLE_ZONE dedicated clusters is 1 whereas MULTI_ZONE
+                            dedicated clusters must have 2 CKUs or more. The number
+                            of Confluent Kafka Units (CKUs) for Dedicated cluster
+                            types. MULTI_ZONE dedicated clusters must have at least
+                            two CKUs.
+                          type: number
+                        encryptionKey:
+                          description: The ID of the encryption key that is used to
+                            encrypt the data in the Kafka cluster.
+                          type: string
+                      type: object
+                    type: array
+                  displayName:
+                    description: The name of the Kafka cluster. The name of the Kafka
+                      cluster.
+                    type: string
+                  enterprise:
+                    description: The configuration of the Enterprise Kafka cluster.
+                    items:
+                      type: object
+                    type: array
+                  environment:
+                    description: 'supports the following: Environment objects represent
+                      an isolated namespace for your Confluent resources for organizational
+                      purposes.'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The unique identifier
+                            for the environment.
                           type: string
                         idRef:
-                          description: Reference to a Cluster to populate id.
+                          description: Reference to a Environment in confluent to
+                            populate id.
                           properties:
                             name:
                               description: Name of the referenced object.
@@ -161,7 +169,8 @@ spec:
                           - name
                           type: object
                         idSelector:
-                          description: Selector for a Cluster to populate id.
+                          description: Selector for a Environment in confluent to
+                            populate id.
                           properties:
                             matchControllerRef:
                               description: MatchControllerRef ensures an object with
@@ -203,24 +212,36 @@ spec:
                           type: object
                       type: object
                     type: array
-                  partitionsCount:
-                    description: The number of partitions to create in the topic.
-                      Defaults to 6. The number of partitions to create in the topic.
-                      Defaults to `6`.
-                    type: number
-                  restEndpoint:
-                    description: The REST endpoint of the Kafka cluster, for example,
-                      https://pkc-00000.us-central1.gcp.confluent.cloud:443). The
-                      REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                  freight:
+                    description: The configuration of the Freight Kafka cluster.
+                    items:
+                      type: object
+                    type: array
+                  network:
+                    description: 'supports the following: Network represents a network
+                      (VPC) in Confluent Cloud. All Networks exist within Confluent-managed
+                      cloud provider accounts.'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The unique identifier
+                            for the network.
+                          type: string
+                      type: object
+                    type: array
+                  region:
+                    description: The cloud service provider region where the Kafka
+                      cluster is running, for example, us-west-2. See Cloud Providers
+                      and Regions for a full list of options for AWS, Azure, and GCP.
+                      The cloud service provider region where the Kafka cluster is
+                      running.
                     type: string
-                  topicName:
-                    description: 'The name of the topic, for example, orders-1. The
-                      topic name can be up to 249 characters in length, and can include
-                      the following characters: a-z, A-Z, 0-9, . (dot), _ (underscore),
-                      and - (dash). As a best practice, we recommend against using
-                      any personally identifiable information (PII) when naming your
-                      topic. The name of the topic, for example, `orders-1`.'
-                    type: string
+                  standard:
+                    description: The configuration of the Standard Kafka cluster.
+                    items:
+                      type: object
+                    type: array
                 type: object
               initProvider:
                 description: THIS IS A BETA FIELD. It will be honored unless the Management
@@ -234,40 +255,98 @@ spec:
                   for example because of an external controller is managing them,
                   like an autoscaler.
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom topic settings to set: The custom topic
-                      settings to set (e.g., `"cleanup.policy" = "compact"`).'
-                    type: object
-                  credentials:
-                    description: 'supports the following: The Cluster API Credentials.'
+                  availability:
+                    description: 'The availability zone configuration of the Kafka
+                      cluster. Accepted values are: SINGLE_ZONE, MULTI_ZONE, LOW,
+                      and HIGH. The availability zone configuration of the Kafka cluster.'
+                    type: string
+                  basic:
+                    description: The configuration of the Basic Kafka cluster.
                     items:
                       type: object
                     type: array
-                  kafkaCluster:
+                  byokKey:
                     description: 'supports the following:'
                     items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The ID of the Confluent
+                            key that is used to encrypt the data in the Kafka cluster.
+                          type: string
                       type: object
                     type: array
-                  partitionsCount:
-                    description: The number of partitions to create in the topic.
-                      Defaults to 6. The number of partitions to create in the topic.
-                      Defaults to `6`.
-                    type: number
-                  restEndpoint:
-                    description: The REST endpoint of the Kafka cluster, for example,
-                      https://pkc-00000.us-central1.gcp.confluent.cloud:443). The
-                      REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                  cloud:
+                    description: 'The cloud service provider that runs the Kafka cluster.
+                      Accepted values are: AWS, AZURE, and GCP. The cloud service
+                      provider that runs the Kafka cluster.'
                     type: string
-                  topicName:
-                    description: 'The name of the topic, for example, orders-1. The
-                      topic name can be up to 249 characters in length, and can include
-                      the following characters: a-z, A-Z, 0-9, . (dot), _ (underscore),
-                      and - (dash). As a best practice, we recommend against using
-                      any personally identifiable information (PII) when naming your
-                      topic. The name of the topic, for example, `orders-1`.'
+                  dedicated:
+                    description: 'The configuration of the Dedicated Kafka cluster.
+                      It supports the following:'
+                    items:
+                      properties:
+                        cku:
+                          description: The number of Confluent Kafka Units (CKUs)
+                            for Dedicated cluster types. The minimum number of CKUs
+                            for SINGLE_ZONE dedicated clusters is 1 whereas MULTI_ZONE
+                            dedicated clusters must have 2 CKUs or more. The number
+                            of Confluent Kafka Units (CKUs) for Dedicated cluster
+                            types. MULTI_ZONE dedicated clusters must have at least
+                            two CKUs.
+                          type: number
+                        encryptionKey:
+                          description: The ID of the encryption key that is used to
+                            encrypt the data in the Kafka cluster.
+                          type: string
+                      type: object
+                    type: array
+                  displayName:
+                    description: The name of the Kafka cluster. The name of the Kafka
+                      cluster.
                     type: string
+                  enterprise:
+                    description: The configuration of the Enterprise Kafka cluster.
+                    items:
+                      type: object
+                    type: array
+                  environment:
+                    description: 'supports the following: Environment objects represent
+                      an isolated namespace for your Confluent resources for organizational
+                      purposes.'
+                    items:
+                      type: object
+                    type: array
+                  freight:
+                    description: The configuration of the Freight Kafka cluster.
+                    items:
+                      type: object
+                    type: array
+                  network:
+                    description: 'supports the following: Network represents a network
+                      (VPC) in Confluent Cloud. All Networks exist within Confluent-managed
+                      cloud provider accounts.'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The unique identifier
+                            for the network.
+                          type: string
+                      type: object
+                    type: array
+                  region:
+                    description: The cloud service provider region where the Kafka
+                      cluster is running, for example, us-west-2. See Cloud Providers
+                      and Regions for a full list of options for AWS, Azure, and GCP.
+                      The cloud service provider region where the Kafka cluster is
+                      running.
+                    type: string
+                  standard:
+                    description: The configuration of the Standard Kafka cluster.
+                    items:
+                      type: object
+                    type: array
                 type: object
               managementPolicies:
                 default:
@@ -430,97 +509,171 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.topicName is a required parameter
+            - message: spec.forProvider.availability is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.topicName)
-                || (has(self.initProvider) && has(self.initProvider.topicName))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.availability)
+                || (has(self.initProvider) && has(self.initProvider.availability))'
+            - message: spec.forProvider.cloud is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.cloud)
+                || (has(self.initProvider) && has(self.initProvider.cloud))'
+            - message: spec.forProvider.displayName is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.displayName)
+                || (has(self.initProvider) && has(self.initProvider.displayName))'
+            - message: spec.forProvider.environment is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.environment)
+                || (has(self.initProvider) && has(self.initProvider.environment))'
+            - message: spec.forProvider.region is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.region)
+                || (has(self.initProvider) && has(self.initProvider.region))'
           status:
-            description: KafkaTopicStatus defines the observed state of KafkaTopic.
+            description: ClusterStatus defines the observed state of Cluster.
             properties:
               atProvider:
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom topic settings to set: The custom topic
-                      settings to set (e.g., `"cleanup.policy" = "compact"`).'
-                    type: object
-                  credentials:
-                    description: 'supports the following: The Cluster API Credentials.'
+                  apiVersion:
+                    description: An API Version of the schema version of the Kafka
+                      cluster, for example, cmk/v2. API Version defines the schema
+                      version of this representation of a Kafka cluster.
+                    type: string
+                  availability:
+                    description: 'The availability zone configuration of the Kafka
+                      cluster. Accepted values are: SINGLE_ZONE, MULTI_ZONE, LOW,
+                      and HIGH. The availability zone configuration of the Kafka cluster.'
+                    type: string
+                  basic:
+                    description: The configuration of the Basic Kafka cluster.
                     items:
-                      properties:
-                        keySecretRef:
-                          description: The Kafka API Key. The Cluster API Key for
-                            your Confluent Cloud cluster.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                            namespace:
-                              description: Namespace of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          - namespace
-                          type: object
-                        secretSecretRef:
-                          description: The Kafka API Secret. The Cluster API Secret
-                            for your Confluent Cloud cluster.
-                          properties:
-                            key:
-                              description: The key to select.
-                              type: string
-                            name:
-                              description: Name of the secret.
-                              type: string
-                            namespace:
-                              description: Namespace of the secret.
-                              type: string
-                          required:
-                          - key
-                          - name
-                          - namespace
-                          type: object
-                      required:
-                      - keySecretRef
-                      - secretSecretRef
                       type: object
                     type: array
-                  id:
-                    description: The ID of the Kafka cluster, for example, lkc-abc123.
+                  bootstrapEndpoint:
+                    description: The bootstrap endpoint used by Kafka clients to connect
+                      to the Kafka cluster. (e.g., SASL_SSL://pkc-00000.us-central1.gcp.confluent.cloud:9092).
+                      The bootstrap endpoint used by Kafka clients to connect to the
+                      Kafka cluster.
                     type: string
-                  kafkaCluster:
+                  byokKey:
                     description: 'supports the following:'
                     items:
                       properties:
                         id:
-                          description: The ID of the Kafka cluster, for example, lkc-abc123.
-                            The Kafka cluster ID (e.g., `lkc-12345`).
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The ID of the Confluent
+                            key that is used to encrypt the data in the Kafka cluster.
                           type: string
                       type: object
                     type: array
-                  partitionsCount:
-                    description: The number of partitions to create in the topic.
-                      Defaults to 6. The number of partitions to create in the topic.
-                      Defaults to `6`.
-                    type: number
+                  cloud:
+                    description: 'The cloud service provider that runs the Kafka cluster.
+                      Accepted values are: AWS, AZURE, and GCP. The cloud service
+                      provider that runs the Kafka cluster.'
+                    type: string
+                  dedicated:
+                    description: 'The configuration of the Dedicated Kafka cluster.
+                      It supports the following:'
+                    items:
+                      properties:
+                        cku:
+                          description: The number of Confluent Kafka Units (CKUs)
+                            for Dedicated cluster types. The minimum number of CKUs
+                            for SINGLE_ZONE dedicated clusters is 1 whereas MULTI_ZONE
+                            dedicated clusters must have 2 CKUs or more. The number
+                            of Confluent Kafka Units (CKUs) for Dedicated cluster
+                            types. MULTI_ZONE dedicated clusters must have at least
+                            two CKUs.
+                          type: number
+                        encryptionKey:
+                          description: The ID of the encryption key that is used to
+                            encrypt the data in the Kafka cluster.
+                          type: string
+                        zones:
+                          description: The list of zones the cluster is in. The list
+                            of zones the cluster is in.
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    type: array
+                  displayName:
+                    description: The name of the Kafka cluster. The name of the Kafka
+                      cluster.
+                    type: string
+                  enterprise:
+                    description: The configuration of the Enterprise Kafka cluster.
+                    items:
+                      type: object
+                    type: array
+                  environment:
+                    description: 'supports the following: Environment objects represent
+                      an isolated namespace for your Confluent resources for organizational
+                      purposes.'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The unique identifier
+                            for the environment.
+                          type: string
+                      type: object
+                    type: array
+                  freight:
+                    description: The configuration of the Freight Kafka cluster.
+                    items:
+                      properties:
+                        zones:
+                          description: The list of zones the cluster is in. The list
+                            of zones the cluster is in.
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    type: array
+                  id:
+                    description: The ID of the Environment that the Kafka cluster
+                      belongs to, for example, env-abc123.
+                    type: string
+                  kind:
+                    description: A kind of the Kafka cluster, for example, Cluster.
+                      Kind defines the object Kafka cluster represents.
+                    type: string
+                  network:
+                    description: 'supports the following: Network represents a network
+                      (VPC) in Confluent Cloud. All Networks exist within Confluent-managed
+                      cloud provider accounts.'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Environment that the Kafka cluster
+                            belongs to, for example, env-abc123. The unique identifier
+                            for the network.
+                          type: string
+                      type: object
+                    type: array
+                  rbacCrn:
+                    description: The Confluent Resource Name of the Kafka cluster,
+                      for example, crn://confluent.cloud/organization=1111aaaa-11aa-11aa-11aa-111111aaaaaa/environment=env-abc123/cloud-cluster=lkc-abc123.
+                      The Confluent Resource Name of the Kafka cluster suitable for
+                      confluent_role_binding's crn_pattern.
+                    type: string
+                  region:
+                    description: The cloud service provider region where the Kafka
+                      cluster is running, for example, us-west-2. See Cloud Providers
+                      and Regions for a full list of options for AWS, Azure, and GCP.
+                      The cloud service provider region where the Kafka cluster is
+                      running.
+                    type: string
                   restEndpoint:
-                    description: The REST endpoint of the Kafka cluster, for example,
-                      https://pkc-00000.us-central1.gcp.confluent.cloud:443). The
-                      REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                    description: The REST endpoint of the Kafka cluster (e.g., https://pkc-00000.us-central1.gcp.confluent.cloud:443).
+                      The REST endpoint of the Kafka cluster.
                     type: string
-                  topicName:
-                    description: 'The name of the topic, for example, orders-1. The
-                      topic name can be up to 249 characters in length, and can include
-                      the following characters: a-z, A-Z, 0-9, . (dot), _ (underscore),
-                      and - (dash). As a best practice, we recommend against using
-                      any personally identifiable information (PII) when naming your
-                      topic. The name of the topic, for example, `orders-1`.'
-                    type: string
+                  standard:
+                    description: The configuration of the Standard Kafka cluster.
+                    items:
+                      type: object
+                    type: array
                 type: object
               conditions:
                 description: Conditions of the resource.

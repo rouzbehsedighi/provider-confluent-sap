@@ -1,4 +1,4 @@
-apiVersion: confluent.crossplane.io/v1alpha1
+apiVersion: confluent.test.sap/v1alpha1
 kind: Cluster
 metadata:
   annotations:
@@ -21,7 +21,7 @@ spec:
 
 ---
 
-apiVersion: confluent.crossplane.io/v1alpha1
+apiVersion: confluent.test.sap/v1alpha1
 kind: Environment
 metadata:
   annotations:

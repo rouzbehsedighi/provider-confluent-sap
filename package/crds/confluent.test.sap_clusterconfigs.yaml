@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: rolebindings.confluent.crossplane.io
+  name: clusterconfigs.confluent.test.sap
 spec:
-  group: confluent.crossplane.io
+  group: confluent.test.sap
   names:
     categories:
     - crossplane
     - managed
     - confluent
-    kind: RoleBinding
-    listKind: RoleBindingList
-    plural: rolebindings
-    singular: rolebinding
+    kind: ClusterConfig
+    listKind: ClusterConfigList
+    plural: clusterconfigs
+    singular: clusterconfig
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: RoleBinding is the Schema for the RoleBindings API.
+        description: ClusterConfig is the Schema for the ClusterConfigs API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,7 +49,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: RoleBindingSpec defines the desired state of RoleBinding
+            description: ClusterConfigSpec defines the desired state of ClusterConfig
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,27 +66,71 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  crnPattern:
-                    description: A Confluent Resource Name (CRN) that specifies the
-                      scope and resource patterns necessary for the role to bind.
-                      A CRN that specifies the scope and resource patterns necessary
-                      for the role to bind.
-                    type: string
-                  disableWaitForReady:
-                    description: An optional flag to disable wait-for-readiness on
-                      create. Must be unset when importing. Defaults to false. Defaults
-                      to `false`.
-                    type: boolean
-                  principal:
-                    description: A principal User to bind the role to, for example,
-                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
-                      for binding to a service account "sa-111aaa". The principal
-                      User to bind the role to.
-                    type: string
-                  roleName:
-                    description: A name of the role to bind to the principal. See
-                      Confluent Cloud RBAC Roles for a full list of supported role
-                      names. The name of the role to bind to the principal.
+                  config:
+                    additionalProperties:
+                      type: string
+                    description: 'The custom cluster settings to set: The custom cluster
+                      settings to set (e.g., `"num.partitions" = "8"`).'
+                    type: object
+                  credentials:
+                    description: 'supports the following: The Cluster API Credentials.'
+                    items:
+                      properties:
+                        keySecretRef:
+                          description: The Kafka API Key. The Cluster API Key for
+                            your Confluent Cloud cluster.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              description: Name of the secret.
+                              type: string
+                            namespace:
+                              description: Namespace of the secret.
+                              type: string
+                          required:
+                          - key
+                          - name
+                          - namespace
+                          type: object
+                        secretSecretRef:
+                          description: The Kafka API Secret. The Cluster API Secret
+                            for your Confluent Cloud cluster.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              description: Name of the secret.
+                              type: string
+                            namespace:
+                              description: Namespace of the secret.
+                              type: string
+                          required:
+                          - key
+                          - name
+                          - namespace
+                          type: object
+                      required:
+                      - keySecretRef
+                      - secretSecretRef
+                      type: object
+                    type: array
+                  kafkaCluster:
+                    description: 'supports the following:'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Dedicated Kafka cluster, for
+                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
+                          type: string
+                      type: object
+                    type: array
+                  restEndpoint:
+                    description: The REST endpoint of the Dedicated Kafka cluster,
+                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
+                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               initProvider:
@@ -101,27 +145,31 @@ spec:
                   for example because of an external controller is managing them,
                   like an autoscaler.
                 properties:
-                  crnPattern:
-                    description: A Confluent Resource Name (CRN) that specifies the
-                      scope and resource patterns necessary for the role to bind.
-                      A CRN that specifies the scope and resource patterns necessary
-                      for the role to bind.
-                    type: string
-                  disableWaitForReady:
-                    description: An optional flag to disable wait-for-readiness on
-                      create. Must be unset when importing. Defaults to false. Defaults
-                      to `false`.
-                    type: boolean
-                  principal:
-                    description: A principal User to bind the role to, for example,
-                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
-                      for binding to a service account "sa-111aaa". The principal
-                      User to bind the role to.
-                    type: string
-                  roleName:
-                    description: A name of the role to bind to the principal. See
-                      Confluent Cloud RBAC Roles for a full list of supported role
-                      names. The name of the role to bind to the principal.
+                  config:
+                    additionalProperties:
+                      type: string
+                    description: 'The custom cluster settings to set: The custom cluster
+                      settings to set (e.g., `"num.partitions" = "8"`).'
+                    type: object
+                  credentials:
+                    description: 'supports the following: The Cluster API Credentials.'
+                    items:
+                      type: object
+                    type: array
+                  kafkaCluster:
+                    description: 'supports the following:'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Dedicated Kafka cluster, for
+                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
+                          type: string
+                      type: object
+                    type: array
+                  restEndpoint:
+                    description: The REST endpoint of the Dedicated Kafka cluster,
+                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
+                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               managementPolicies:
@@ -285,47 +333,84 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.crnPattern is a required parameter
+            - message: spec.forProvider.config is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.crnPattern)
-                || (has(self.initProvider) && has(self.initProvider.crnPattern))'
-            - message: spec.forProvider.principal is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.principal)
-                || (has(self.initProvider) && has(self.initProvider.principal))'
-            - message: spec.forProvider.roleName is a required parameter
-              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.roleName)
-                || (has(self.initProvider) && has(self.initProvider.roleName))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.config)
+                || (has(self.initProvider) && has(self.initProvider.config))'
           status:
-            description: RoleBindingStatus defines the observed state of RoleBinding.
+            description: ClusterConfigStatus defines the observed state of ClusterConfig.
             properties:
               atProvider:
                 properties:
-                  crnPattern:
-                    description: A Confluent Resource Name (CRN) that specifies the
-                      scope and resource patterns necessary for the role to bind.
-                      A CRN that specifies the scope and resource patterns necessary
-                      for the role to bind.
-                    type: string
-                  disableWaitForReady:
-                    description: An optional flag to disable wait-for-readiness on
-                      create. Must be unset when importing. Defaults to false. Defaults
-                      to `false`.
-                    type: boolean
+                  config:
+                    additionalProperties:
+                      type: string
+                    description: 'The custom cluster settings to set: The custom cluster
+                      settings to set (e.g., `"num.partitions" = "8"`).'
+                    type: object
+                  credentials:
+                    description: 'supports the following: The Cluster API Credentials.'
+                    items:
+                      properties:
+                        keySecretRef:
+                          description: The Kafka API Key. The Cluster API Key for
+                            your Confluent Cloud cluster.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              description: Name of the secret.
+                              type: string
+                            namespace:
+                              description: Namespace of the secret.
+                              type: string
+                          required:
+                          - key
+                          - name
+                          - namespace
+                          type: object
+                        secretSecretRef:
+                          description: The Kafka API Secret. The Cluster API Secret
+                            for your Confluent Cloud cluster.
+                          properties:
+                            key:
+                              description: The key to select.
+                              type: string
+                            name:
+                              description: Name of the secret.
+                              type: string
+                            namespace:
+                              description: Namespace of the secret.
+                              type: string
+                          required:
+                          - key
+                          - name
+                          - namespace
+                          type: object
+                      required:
+                      - keySecretRef
+                      - secretSecretRef
+                      type: object
+                    type: array
                   id:
-                    description: The ID of the Role Binding (e.g., rb-f3a90de).
+                    description: The ID of the Dedicated Kafka cluster, for example,
+                      lkc-abc123.
                     type: string
-                  principal:
-                    description: A principal User to bind the role to, for example,
-                      "User:u-111aaa" for binding to a user "u-111aaa", or "User:sa-111aaa"
-                      for binding to a service account "sa-111aaa". The principal
-                      User to bind the role to.
-                    type: string
-                  roleName:
-                    description: A name of the role to bind to the principal. See
-                      Confluent Cloud RBAC Roles for a full list of supported role
-                      names. The name of the role to bind to the principal.
+                  kafkaCluster:
+                    description: 'supports the following:'
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the Dedicated Kafka cluster, for
+                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
+                          type: string
+                      type: object
+                    type: array
+                  restEndpoint:
+                    description: The REST endpoint of the Dedicated Kafka cluster,
+                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
+                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               conditions:

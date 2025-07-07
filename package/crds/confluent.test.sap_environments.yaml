@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: serviceaccounts.confluent.crossplane.io
+  name: environments.confluent.test.sap
 spec:
-  group: confluent.crossplane.io
+  group: confluent.test.sap
   names:
     categories:
     - crossplane
     - managed
     - confluent
-    kind: ServiceAccount
-    listKind: ServiceAccountList
-    plural: serviceaccounts
-    singular: serviceaccount
+    kind: Environment
+    listKind: EnvironmentList
+    plural: environments
+    singular: environment
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ServiceAccount is the Schema for the ServiceAccounts API.
+        description: Environment is the Schema for the Environments API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,7 +49,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ServiceAccountSpec defines the desired state of ServiceAccount
+            description: EnvironmentSpec defines the desired state of Environment
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,14 +66,25 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  description:
-                    description: A free-form description of the Service Account. A
-                      free-form description of the Service Account.
-                    type: string
                   displayName:
-                    description: A human-readable name for the Service Account. A
-                      human-readable name for the Service Account.
+                    description: A human-readable name for the Environment. Start
+                      and end the name with alphanumeric characters, for example,
+                      "Development". The name can contain hyphens and underscores.
+                      A human-readable name for the Environment.
                     type: string
+                  streamGovernance:
+                    description: 'The stream governance configuration for the Environment.
+                      The block supports the following arguments: Stream Governance
+                      configurations for the environment'
+                    items:
+                      properties:
+                        package:
+                          description: 'The stream governance package for the Environment.
+                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
+                            Package. ''ESSENTIALS'' or ''ADVANCED'''
+                          type: string
+                      type: object
+                    type: array
                 type: object
               initProvider:
                 description: THIS IS A BETA FIELD. It will be honored unless the Management
@@ -87,14 +98,25 @@ spec:
                   for example because of an external controller is managing them,
                   like an autoscaler.
                 properties:
-                  description:
-                    description: A free-form description of the Service Account. A
-                      free-form description of the Service Account.
-                    type: string
                   displayName:
-                    description: A human-readable name for the Service Account. A
-                      human-readable name for the Service Account.
+                    description: A human-readable name for the Environment. Start
+                      and end the name with alphanumeric characters, for example,
+                      "Development". The name can contain hyphens and underscores.
+                      A human-readable name for the Environment.
                     type: string
+                  streamGovernance:
+                    description: 'The stream governance configuration for the Environment.
+                      The block supports the following arguments: Stream Governance
+                      configurations for the environment'
+                    items:
+                      properties:
+                        package:
+                          description: 'The stream governance package for the Environment.
+                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
+                            Package. ''ESSENTIALS'' or ''ADVANCED'''
+                          type: string
+                      type: object
+                    type: array
                 type: object
               managementPolicies:
                 default:
@@ -262,30 +284,37 @@ spec:
                 || ''Update'' in self.managementPolicies) || has(self.forProvider.displayName)
                 || (has(self.initProvider) && has(self.initProvider.displayName))'
           status:
-            description: ServiceAccountStatus defines the observed state of ServiceAccount.
+            description: EnvironmentStatus defines the observed state of Environment.
             properties:
               atProvider:
                 properties:
-                  apiVersion:
-                    description: An API Version of the schema version of the Service
-                      Account, for example, iam/v2. API Version defines the schema
-                      version of this representation of a Service Account.
-                    type: string
-                  description:
-                    description: A free-form description of the Service Account. A
-                      free-form description of the Service Account.
-                    type: string
                   displayName:
-                    description: A human-readable name for the Service Account. A
-                      human-readable name for the Service Account.
+                    description: A human-readable name for the Environment. Start
+                      and end the name with alphanumeric characters, for example,
+                      "Development". The name can contain hyphens and underscores.
+                      A human-readable name for the Environment.
                     type: string
                   id:
-                    description: The ID of the Service Account (e.g., sa-abc123).
+                    description: The ID of the Environment, for example, env-abc123.
                     type: string
-                  kind:
-                    description: A kind of the Service Account, for example, ServiceAccount.
-                      Kind defines the object Service Account represents.
+                  resourceName:
+                    description: The Confluent Resource Name of the Environment, for
+                      example, crn://confluent.cloud/organization=1111aaaa-11aa-11aa-11aa-111111aaaaaa/environment=env-abc123.
+                      The Confluent Resource Name of the Environment.
                     type: string
+                  streamGovernance:
+                    description: 'The stream governance configuration for the Environment.
+                      The block supports the following arguments: Stream Governance
+                      configurations for the environment'
+                    items:
+                      properties:
+                        package:
+                          description: 'The stream governance package for the Environment.
+                            Accepted values are: ESSENTIALS and ADVANCED. Stream Governance
+                            Package. ''ESSENTIALS'' or ''ADVANCED'''
+                          type: string
+                      type: object
+                    type: array
                 type: object
               conditions:
                 description: Conditions of the resource.

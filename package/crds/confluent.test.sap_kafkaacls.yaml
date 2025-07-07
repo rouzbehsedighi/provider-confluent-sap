@@ -4,18 +4,18 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.13.0
-  name: clusterconfigs.confluent.crossplane.io
+  name: kafkaacls.confluent.test.sap
 spec:
-  group: confluent.crossplane.io
+  group: confluent.test.sap
   names:
     categories:
     - crossplane
     - managed
     - confluent
-    kind: ClusterConfig
-    listKind: ClusterConfigList
-    plural: clusterconfigs
-    singular: clusterconfig
+    kind: KafkaACL
+    listKind: KafkaACLList
+    plural: kafkaacls
+    singular: kafkaacl
   scope: Cluster
   versions:
   - additionalPrinterColumns:
@@ -34,7 +34,7 @@ spec:
     name: v1alpha1
     schema:
       openAPIV3Schema:
-        description: ClusterConfig is the Schema for the ClusterConfigs API.
+        description: KafkaACL is the Schema for the KafkaACLs API.
         properties:
           apiVersion:
             description: 'APIVersion defines the versioned schema of this representation
@@ -49,7 +49,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: ClusterConfigSpec defines the desired state of ClusterConfig
+            description: KafkaACLSpec defines the desired state of KafkaACL
             properties:
               deletionPolicy:
                 default: Delete
@@ -66,12 +66,6 @@ spec:
                 type: string
               forProvider:
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom cluster settings to set: The custom cluster
-                      settings to set (e.g., `"num.partitions" = "8"`).'
-                    type: object
                   credentials:
                     description: 'supports the following: The Cluster API Credentials.'
                     items:
@@ -117,20 +111,205 @@ spec:
                       - secretSecretRef
                       type: object
                     type: array
+                  host:
+                    description: The host for the ACL. Should be set to * for Confluent
+                      Cloud. The host for the ACL.
+                    type: string
                   kafkaCluster:
                     description: 'supports the following:'
                     items:
                       properties:
                         id:
-                          description: The ID of the Dedicated Kafka cluster, for
-                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
+                          description: The ID of the Kafka cluster, for example, lkc-abc123.
+                            The Kafka cluster ID (e.g., `lkc-12345`).
                           type: string
+                        idRef:
+                          description: Reference to a Cluster to populate id.
+                          properties:
+                            name:
+                              description: Name of the referenced object.
+                              type: string
+                            policy:
+                              description: Policies for referencing.
+                              properties:
+                                resolution:
+                                  default: Required
+                                  description: Resolution specifies whether resolution
+                                    of this reference is required. The default is
+                                    'Required', which means the reconcile will fail
+                                    if the reference cannot be resolved. 'Optional'
+                                    means this reference will be a no-op if it cannot
+                                    be resolved.
+                                  enum:
+                                  - Required
+                                  - Optional
+                                  type: string
+                                resolve:
+                                  description: Resolve specifies when this reference
+                                    should be resolved. The default is 'IfNotPresent',
+                                    which will attempt to resolve the reference only
+                                    when the corresponding field is not present. Use
+                                    'Always' to resolve the reference on every reconcile.
+                                  enum:
+                                  - Always
+                                  - IfNotPresent
+                                  type: string
+                              type: object
+                          required:
+                          - name
+                          type: object
+                        idSelector:
+                          description: Selector for a Cluster to populate id.
+                          properties:
+                            matchControllerRef:
+                              description: MatchControllerRef ensures an object with
+                                the same controller reference as the selecting object
+                                is selected.
+                              type: boolean
+                            matchLabels:
+                              additionalProperties:
+                                type: string
+                              description: MatchLabels ensures an object with matching
+                                labels is selected.
+                              type: object
+                            policy:
+                              description: Policies for selection.
+                              properties:
+                                resolution:
+                                  default: Required
+                                  description: Resolution specifies whether resolution
+                                    of this reference is required. The default is
+                                    'Required', which means the reconcile will fail
+                                    if the reference cannot be resolved. 'Optional'
+                                    means this reference will be a no-op if it cannot
+                                    be resolved.
+                                  enum:
+                                  - Required
+                                  - Optional
+                                  type: string
+                                resolve:
+                                  description: Resolve specifies when this reference
+                                    should be resolved. The default is 'IfNotPresent',
+                                    which will attempt to resolve the reference only
+                                    when the corresponding field is not present. Use
+                                    'Always' to resolve the reference on every reconcile.
+                                  enum:
+                                  - Always
+                                  - IfNotPresent
+                                  type: string
+                              type: object
+                          type: object
                       type: object
                     type: array
+                  operation:
+                    description: 'The operation type for the ACL. Accepted values
+                      are: ALL, READ, WRITE, CREATE, DELETE, ALTER, DESCRIBE, CLUSTER_ACTION,
+                      DESCRIBE_CONFIGS, ALTER_CONFIGS, and IDEMPOTENT_WRITE.  See
+                      Authorization using ACLs to find mappings of (resource_type,
+                      operation) to one or more Kafka APIs or request types. The operation
+                      type for the ACL.'
+                    type: string
+                  patternType:
+                    description: 'The pattern type for the ACL. Accepted values are:
+                      LITERAL and PREFIXED. The pattern type for the ACL.'
+                    type: string
+                  permission:
+                    description: 'The permission for the ACL. Accepted values are:
+                      DENY and ALLOW. The permission for the ACL.'
+                    type: string
+                  principal:
+                    description: The principal for the ACL. The principal for the
+                      ACL.
+                    type: string
+                  principalRef:
+                    description: Reference to a ServiceAccount to populate principal.
+                    properties:
+                      name:
+                        description: Name of the referenced object.
+                        type: string
+                      policy:
+                        description: Policies for referencing.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: Resolution specifies whether resolution of
+                              this reference is required. The default is 'Required',
+                              which means the reconcile will fail if the reference
+                              cannot be resolved. 'Optional' means this reference
+                              will be a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: Resolve specifies when this reference should
+                              be resolved. The default is 'IfNotPresent', which will
+                              attempt to resolve the reference only when the corresponding
+                              field is not present. Use 'Always' to resolve the reference
+                              on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    required:
+                    - name
+                    type: object
+                  principalSelector:
+                    description: Selector for a ServiceAccount to populate principal.
+                    properties:
+                      matchControllerRef:
+                        description: MatchControllerRef ensures an object with the
+                          same controller reference as the selecting object is selected.
+                        type: boolean
+                      matchLabels:
+                        additionalProperties:
+                          type: string
+                        description: MatchLabels ensures an object with matching labels
+                          is selected.
+                        type: object
+                      policy:
+                        description: Policies for selection.
+                        properties:
+                          resolution:
+                            default: Required
+                            description: Resolution specifies whether resolution of
+                              this reference is required. The default is 'Required',
+                              which means the reconcile will fail if the reference
+                              cannot be resolved. 'Optional' means this reference
+                              will be a no-op if it cannot be resolved.
+                            enum:
+                            - Required
+                            - Optional
+                            type: string
+                          resolve:
+                            description: Resolve specifies when this reference should
+                              be resolved. The default is 'IfNotPresent', which will
+                              attempt to resolve the reference only when the corresponding
+                              field is not present. Use 'Always' to resolve the reference
+                              on every reconcile.
+                            enum:
+                            - Always
+                            - IfNotPresent
+                            type: string
+                        type: object
+                    type: object
+                  resourceName:
+                    description: The resource name for the ACL. Must be kafka-cluster
+                      if resource_type equals to CLUSTER. The resource name for the
+                      ACL.
+                    type: string
+                  resourceType:
+                    description: 'The type of the resource. Accepted values are: TOPIC,
+                      GROUP, CLUSTER, TRANSACTIONAL_ID, DELEGATION_TOKEN. See Authorization
+                      using ACLs to find definitions of resource types and mappings
+                      of (resource_type, operation) to one or more Kafka APIs or request
+                      types. The type of the resource.'
+                    type: string
                   restEndpoint:
-                    description: The REST endpoint of the Dedicated Kafka cluster,
-                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
-                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                    description: The REST endpoint of the Kafka cluster, for example,
+                      https://pkc-00000.us-central1.gcp.confluent.cloud:443. The REST
+                      endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               initProvider:
@@ -145,31 +324,52 @@ spec:
                   for example because of an external controller is managing them,
                   like an autoscaler.
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom cluster settings to set: The custom cluster
-                      settings to set (e.g., `"num.partitions" = "8"`).'
-                    type: object
                   credentials:
                     description: 'supports the following: The Cluster API Credentials.'
                     items:
                       type: object
                     type: array
+                  host:
+                    description: The host for the ACL. Should be set to * for Confluent
+                      Cloud. The host for the ACL.
+                    type: string
                   kafkaCluster:
                     description: 'supports the following:'
                     items:
-                      properties:
-                        id:
-                          description: The ID of the Dedicated Kafka cluster, for
-                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
-                          type: string
                       type: object
                     type: array
+                  operation:
+                    description: 'The operation type for the ACL. Accepted values
+                      are: ALL, READ, WRITE, CREATE, DELETE, ALTER, DESCRIBE, CLUSTER_ACTION,
+                      DESCRIBE_CONFIGS, ALTER_CONFIGS, and IDEMPOTENT_WRITE.  See
+                      Authorization using ACLs to find mappings of (resource_type,
+                      operation) to one or more Kafka APIs or request types. The operation
+                      type for the ACL.'
+                    type: string
+                  patternType:
+                    description: 'The pattern type for the ACL. Accepted values are:
+                      LITERAL and PREFIXED. The pattern type for the ACL.'
+                    type: string
+                  permission:
+                    description: 'The permission for the ACL. Accepted values are:
+                      DENY and ALLOW. The permission for the ACL.'
+                    type: string
+                  resourceName:
+                    description: The resource name for the ACL. Must be kafka-cluster
+                      if resource_type equals to CLUSTER. The resource name for the
+                      ACL.
+                    type: string
+                  resourceType:
+                    description: 'The type of the resource. Accepted values are: TOPIC,
+                      GROUP, CLUSTER, TRANSACTIONAL_ID, DELEGATION_TOKEN. See Authorization
+                      using ACLs to find definitions of resource types and mappings
+                      of (resource_type, operation) to one or more Kafka APIs or request
+                      types. The type of the resource.'
+                    type: string
                   restEndpoint:
-                    description: The REST endpoint of the Dedicated Kafka cluster,
-                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
-                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                    description: The REST endpoint of the Kafka cluster, for example,
+                      https://pkc-00000.us-central1.gcp.confluent.cloud:443. The REST
+                      endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               managementPolicies:
@@ -333,21 +533,35 @@ spec:
             - forProvider
             type: object
             x-kubernetes-validations:
-            - message: spec.forProvider.config is a required parameter
+            - message: spec.forProvider.host is a required parameter
               rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
-                || ''Update'' in self.managementPolicies) || has(self.forProvider.config)
-                || (has(self.initProvider) && has(self.initProvider.config))'
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.host)
+                || (has(self.initProvider) && has(self.initProvider.host))'
+            - message: spec.forProvider.operation is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.operation)
+                || (has(self.initProvider) && has(self.initProvider.operation))'
+            - message: spec.forProvider.patternType is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.patternType)
+                || (has(self.initProvider) && has(self.initProvider.patternType))'
+            - message: spec.forProvider.permission is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.permission)
+                || (has(self.initProvider) && has(self.initProvider.permission))'
+            - message: spec.forProvider.resourceName is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.resourceName)
+                || (has(self.initProvider) && has(self.initProvider.resourceName))'
+            - message: spec.forProvider.resourceType is a required parameter
+              rule: '!(''*'' in self.managementPolicies || ''Create'' in self.managementPolicies
+                || ''Update'' in self.managementPolicies) || has(self.forProvider.resourceType)
+                || (has(self.initProvider) && has(self.initProvider.resourceType))'
           status:
-            description: ClusterConfigStatus defines the observed state of ClusterConfig.
+            description: KafkaACLStatus defines the observed state of KafkaACL.
             properties:
               atProvider:
                 properties:
-                  config:
-                    additionalProperties:
-                      type: string
-                    description: 'The custom cluster settings to set: The custom cluster
-                      settings to set (e.g., `"num.partitions" = "8"`).'
-                    type: object
                   credentials:
                     description: 'supports the following: The Cluster API Credentials.'
                     items:
@@ -393,24 +607,59 @@ spec:
                       - secretSecretRef
                       type: object
                     type: array
+                  host:
+                    description: The host for the ACL. Should be set to * for Confluent
+                      Cloud. The host for the ACL.
+                    type: string
                   id:
-                    description: The ID of the Dedicated Kafka cluster, for example,
-                      lkc-abc123.
+                    description: The ID of the Kafka cluster, for example, lkc-abc123.
                     type: string
                   kafkaCluster:
                     description: 'supports the following:'
                     items:
                       properties:
                         id:
-                          description: The ID of the Dedicated Kafka cluster, for
-                            example, lkc-abc123. The Kafka cluster ID (e.g., `lkc-12345`).
+                          description: The ID of the Kafka cluster, for example, lkc-abc123.
+                            The Kafka cluster ID (e.g., `lkc-12345`).
                           type: string
                       type: object
                     type: array
+                  operation:
+                    description: 'The operation type for the ACL. Accepted values
+                      are: ALL, READ, WRITE, CREATE, DELETE, ALTER, DESCRIBE, CLUSTER_ACTION,
+                      DESCRIBE_CONFIGS, ALTER_CONFIGS, and IDEMPOTENT_WRITE.  See
+                      Authorization using ACLs to find mappings of (resource_type,
+                      operation) to one or more Kafka APIs or request types. The operation
+                      type for the ACL.'
+                    type: string
+                  patternType:
+                    description: 'The pattern type for the ACL. Accepted values are:
+                      LITERAL and PREFIXED. The pattern type for the ACL.'
+                    type: string
+                  permission:
+                    description: 'The permission for the ACL. Accepted values are:
+                      DENY and ALLOW. The permission for the ACL.'
+                    type: string
+                  principal:
+                    description: The principal for the ACL. The principal for the
+                      ACL.
+                    type: string
+                  resourceName:
+                    description: The resource name for the ACL. Must be kafka-cluster
+                      if resource_type equals to CLUSTER. The resource name for the
+                      ACL.
+                    type: string
+                  resourceType:
+                    description: 'The type of the resource. Accepted values are: TOPIC,
+                      GROUP, CLUSTER, TRANSACTIONAL_ID, DELEGATION_TOKEN. See Authorization
+                      using ACLs to find definitions of resource types and mappings
+                      of (resource_type, operation) to one or more Kafka APIs or request
+                      types. The type of the resource.'
+                    type: string
                   restEndpoint:
-                    description: The REST endpoint of the Dedicated Kafka cluster,
-                      for example, https://pkc-00000.us-central1.gcp.confluent.cloud:443).
-                      The REST endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
+                    description: The REST endpoint of the Kafka cluster, for example,
+                      https://pkc-00000.us-central1.gcp.confluent.cloud:443. The REST
+                      endpoint of the Kafka cluster (e.g., `https://pkc-00000.us-central1.gcp.confluent.cloud:443`).
                     type: string
                 type: object
               conditions:
