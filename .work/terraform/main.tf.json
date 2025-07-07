@@ -1,0 +1,1 @@
+{"terraform":[{"required_providers":[{"provider":{"source":"confluentinc/confluent","version":"2.34.0"}}],"required_version":"1.12.2"}]}
