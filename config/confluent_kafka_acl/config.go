@@ -11,7 +11,7 @@ import (
 
 // Constants for custom Extractor function
 var (
-	selfPackagePath     = "github.com/crossplane-contrib/provider-confluent/config/confluent_kafka_acl"
+	selfPackagePath     = "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_acl"
 	extractResourceIDFn = selfPackagePath + ".ExtractResourceID()"
 )
 

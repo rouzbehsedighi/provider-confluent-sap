@@ -1,4 +1,4 @@
-module github.com/crossplane-contrib/provider-confluent
+module github.com/rouzbehsedighi/provider-confluent-sap
 
 go 1.20
 

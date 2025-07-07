@@ -9,16 +9,16 @@ import (
 
 	"github.com/crossplane/upjet/pkg/controller"
 
-	apikey "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/apikey"
-	cluster "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/cluster"
-	clusterconfig "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/clusterconfig"
-	environment "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/environment"
-	kafkaacl "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/kafkaacl"
-	kafkatopic "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/kafkatopic"
-	rolebinding "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/rolebinding"
-	schema "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/schema"
-	serviceaccount "github.com/crossplane-contrib/provider-confluent/internal/controller/confluent/serviceaccount"
-	providerconfig "github.com/crossplane-contrib/provider-confluent/internal/controller/providerconfig"
+	apikey "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/apikey"
+	cluster "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/cluster"
+	clusterconfig "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/clusterconfig"
+	environment "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/environment"
+	kafkaacl "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/kafkaacl"
+	kafkatopic "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/kafkatopic"
+	rolebinding "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/rolebinding"
+	schema "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/schema"
+	serviceaccount "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/confluent/serviceaccount"
+	providerconfig "github.com/rouzbehsedighi/provider-confluent-sap/internal/controller/providerconfig"
 )
 
 // Setup creates all controllers with the supplied logger and adds them to

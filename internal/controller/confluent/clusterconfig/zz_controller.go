@@ -23,8 +23,8 @@ import (
 	"github.com/crossplane/upjet/pkg/terraform"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	v1alpha1 "github.com/crossplane-contrib/provider-confluent/apis/confluent/v1alpha1"
-	features "github.com/crossplane-contrib/provider-confluent/internal/features"
+	v1alpha1 "github.com/rouzbehsedighi/provider-confluent-sap/apis/confluent/v1alpha1"
+	features "github.com/rouzbehsedighi/provider-confluent-sap/internal/features"
 )
 
 // Setup adds a controller that reconciles ClusterConfig managed resources.
