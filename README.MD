@@ -1,6 +1,6 @@
 # Provider Confluent
 
-`provider-confluent` is a [Crossplane](https://crossplane.io/) provider that
+`provider-confluent` is a [Crossplane](https://test.sap/) provider that
 is built using [Upjet](https://github.com/upbound/upjet) code
 generation tools and exposes XRM-conformant managed resources for the
 Confluent API.
@@ -35,7 +35,7 @@ up ctp provider install crossplane-contrib/provider-confluent:v0.1.0
 Alternatively, you can use declarative installation:
 ```
 cat <<EOF | kubectl apply -f -
-apiVersion: pkg.crossplane.io/v1
+apiVersion: pkg.test.sap/v1
 kind: Provider
 metadata:
   name: provider-confluent

@@ -4,7 +4,7 @@ set -euox pipefail
 read -r -p "Lower case provider name (ex. github): " PROVIDER_NAME_LOWER
 read -r -p "Normal case provider name (ex. GitHub): " PROVIDER_NAME_NORMAL
 read -r -p "Organization (ex. upbound, my-org-name): " ORGANIZATION_NAME
-read -r -p "CRD rootGroup (ex. upbound.io, crossplane.io): " CRD_ROOT_GROUP
+read -r -p "CRD rootGroup (ex. upbound.io, test.sap): " CRD_ROOT_GROUP
 
 REPLACE_FILES='./* ./.github :!build/** :!go.* :!hack/prepare.sh'
 # shellcheck disable=SC2086

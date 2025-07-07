@@ -13,7 +13,7 @@ import (
 
 // Package type metadata.
 const (
-	Group   = "confluent.crossplane.io"
+	Group   = "confluent.test.sap"
 	Version = "v1beta1"
 )
 

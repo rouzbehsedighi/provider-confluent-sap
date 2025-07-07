@@ -1,4 +1,4 @@
-apiVersion: confluent.crossplane.io/v1beta1
+apiVersion: confluent.test.sap/v1beta1
 kind: ProviderConfig
 metadata:
   name: default

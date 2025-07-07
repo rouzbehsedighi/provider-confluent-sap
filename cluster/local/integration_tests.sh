@@ -129,7 +129,7 @@ echo "${PVC_YAML}" | "${KUBECTL}" create -f -
 
 # install crossplane from stable channel
 echo_step "installing crossplane from stable channel"
-"${HELM3}" repo add crossplane-stable https://charts.crossplane.io/stable/ --force-update
+"${HELM3}" repo add crossplane-stable https://charts.test.sap/stable/ --force-update
 chart_version="$("${HELM3}" search repo crossplane-stable/crossplane | awk 'FNR == 2 {print $2}')"
 echo_info "using crossplane version ${chart_version}"
 echo
@@ -144,7 +144,7 @@ echo_step "--- INTEGRATION TESTS ---"
 echo_step "installing ${PROJECT_NAME} into \"${CROSSPLANE_NAMESPACE}\" namespace"
 
 INSTALL_YAML="$( cat <<EOF
-apiVersion: pkg.crossplane.io/v1
+apiVersion: pkg.test.sap/v1
 kind: Provider
 metadata:
   name: "${PACKAGE_NAME}"
@@ -162,11 +162,11 @@ docker exec "${K8S_CLUSTER}-control-plane" ls -la /cache
 
 echo_step "waiting for provider to be installed"
 
-if ! kubectl wait "provider.pkg.crossplane.io/${PACKAGE_NAME}" --for=condition=healthy --timeout=180s; then
-  echo_warn "kubectl describe provider.pkg.crossplane.io/${PACKAGE_NAME}\n"
-  kubectl describe "provider.pkg.crossplane.io/${PACKAGE_NAME}"
-  echo_warn "kubectl describe providerrevision.pkg.crossplane.io\n"
-  kubectl describe providerrevision.pkg.crossplane.io
+if ! kubectl wait "provider.pkg.test.sap/${PACKAGE_NAME}" --for=condition=healthy --timeout=180s; then
+  echo_warn "kubectl describe provider.pkg.test.sap/${PACKAGE_NAME}\n"
+  kubectl describe "provider.pkg.test.sap/${PACKAGE_NAME}"
+  echo_warn "kubectl describe providerrevision.pkg.test.sap\n"
+  kubectl describe providerrevision.pkg.test.sap
 
   DEPLOY_NAMES=$(kubectl get deploy -n crossplane-system -oname | grep ${PACKAGE_NAME})
   for DEPLOY in $DEPLOY_NAMES; do
@@ -189,7 +189,7 @@ echo "${INSTALL_YAML}" | "${KUBECTL}" delete -f -
 
 # wait for pods to be deleted
 echo "waiting for provider to be deleted (times out after 60 seconds)"
-if ! kubectl wait providerrevision.pkg.crossplane.io --for=delete --all --timeout=60s ; then
+if ! kubectl wait providerrevision.pkg.test.sap --for=delete --all --timeout=60s ; then
   echo_error "Waiting for deletion of providers failed"
 fi
 
