@@ -1,6 +1,6 @@
 module github.com/rouzbehsedighi/provider-confluent-sap
 
-go 1.20
+go 1.24.4
 
 require (
 	github.com/crossplane/crossplane-runtime v1.14.2
