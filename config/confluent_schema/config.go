@@ -7,11 +7,11 @@ func Configure(p *config.Provider) {
 	p.AddResourceConfigurator("confluent_schema", func(r *config.Resource) {
 		// We need to override the default group that upjet generated for
 		r.ShortGroup = "confluent"
-		r.References["credentials.0.key_secret_ref.name"] = config.Reference{
+		r.References["credentials.0.key_secret_ref"] = config.Reference{
 			Type: "Secret",
 		}
 
-		r.References["credentials.0.secret_secret_ref.name"] = config.Reference{
+		r.References["credentials.0.secret_secret_ref"] = config.Reference{
 			Type: "Secret",
 		}
 
