@@ -20,6 +20,7 @@ var ExternalNameConfigs = map[string]config.ExternalName{
 	"confluent_role_binding":            config.IdentifierFromProvider,
 	"confluent_schema":                  config.IdentifierFromProvider,
 	"confluent_schema_registry_cluster": config.IdentifierFromProvider,
+	"confluent_provider_config":         config.IdentifierFromProvider,
 }
 
 // ExternalNameConfigurations applies all external name configs listed in the

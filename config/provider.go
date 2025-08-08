@@ -16,6 +16,7 @@ import (
 	confluentkafkacluster "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_cluster"
 	confluentkafkaclusterconfig "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_cluster_config"
 	confluentkafkatopic "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_kafka_topic"
+	confluentproviderconfig "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_provider_config"
 	confluentrolebinding "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_role_binding"
 	confluentschema "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_schema"
 	confluentserviceaccount "github.com/rouzbehsedighi/provider-confluent-sap/config/confluent_service_account"
@@ -53,6 +54,7 @@ func GetProvider() *ujconfig.Provider {
 		confluentkafkatopic.Configure,
 		confluentrolebinding.Configure,
 		confluentschema.Configure,
+		confluentproviderconfig.Configure,
 	} {
 		configure(pc)
 	}
